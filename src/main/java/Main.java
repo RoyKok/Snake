@@ -1,4 +1,5 @@
 import org.newdawn.slick.*;
+import pojo.Body;
 import pojo.DirectionEnum;
 import pojo.Snake;
 
@@ -56,7 +57,10 @@ public class Main extends BasicGame {
             snake.setDirection(DirectionEnum.RIGHT);
         }
 
-        //
+        if (input.isKeyPressed(Input.KEY_SPACE)){
+            snake.addNewBodyPart();
+        }
+
         snake.update();
 
 
@@ -65,6 +69,10 @@ public class Main extends BasicGame {
     public void render(GameContainer gameContainer, Graphics graphics) throws SlickException {
 
         snake.getImage().draw(snake.getxPos(), snake.getyPos(), Snake.imageHeight, Snake.imageWidth);
+
+        for (Body body : snake.getBodyParts()){
+            body.getImage().draw(body.getxPos(), body.getyPos(), Snake.imageHeight, Snake.imageWidth);
+        }
 
     }
 }

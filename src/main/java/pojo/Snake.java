@@ -3,6 +3,9 @@ package pojo;
 import org.newdawn.slick.Image;
 import org.newdawn.slick.SlickException;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * Created by Roy on 21-6-2017.
  *
@@ -19,7 +22,9 @@ public class Snake{
     private DirectionEnum direction;
     private Image image;
 
-
+    private int xPosOld;
+    private int yPosOld;
+    private List<Body> bodyParts = new ArrayList<Body>();
 
     public Snake(int xPos, int yPos, int speed, int length, DirectionEnum direction) throws SlickException {
         this.xPos = xPos;
@@ -32,6 +37,17 @@ public class Snake{
 
     }
 
+    public void addNewBodyPart() throws SlickException {
+        if (bodyParts.size() == 0){
+            //This is the first bodyPart
+            bodyParts.add(new Body(xPosOld, yPosOld));
+        } else {
+            //Get the last Body in the list
+            Body body = bodyParts.get(bodyParts.size()-1);
+            bodyParts.add(new Body(body.getxPosOld(), body.getyPosOld()));
+        }
+    }
+
     public void update(){
 
         //set the position of the snake
@@ -40,6 +56,24 @@ public class Snake{
     }
 
     private void updatePosition(){
+
+        xPosOld = xPos;
+        yPosOld = yPos;
+
+        for (int i=0; i<bodyParts.size(); i++){
+
+            Body body = bodyParts.get(i);
+
+            //This is the first body part after the head, this one needs the x,y from the head.
+            if (i==0){
+                body.updatePosition(xPosOld, yPosOld);
+            } else {
+                //We need x,y from the part above this one.
+                body.updatePosition(bodyParts.get(i-1).getxPosOld(), bodyParts.get(i-1).getyPosOld());
+            }
+
+        }
+
 
         switch(direction){
 
@@ -113,6 +147,30 @@ public class Snake{
 
     public Image getImage() {
         return image;
+    }
+
+    public int getxPosOld() {
+        return xPosOld;
+    }
+
+    public void setxPosOld(int xPosOld) {
+        this.xPosOld = xPosOld;
+    }
+
+    public int getyPosOld() {
+        return yPosOld;
+    }
+
+    public void setyPosOld(int yPosOld) {
+        this.yPosOld = yPosOld;
+    }
+
+    public List<Body> getBodyParts() {
+        return bodyParts;
+    }
+
+    public void setBodyParts(List<Body> bodyParts) {
+        this.bodyParts = bodyParts;
     }
 
     public void setImage(Image image) {
