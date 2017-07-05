@@ -10,27 +10,27 @@ import org.newdawn.slick.*;
  */
 public class Body {
 
-    private int xPos;
-    private int yPos;
-    private int xPosOld;
-    private int yPosOld;
+    private float xPos;
+    private float yPos;
+    private float xPosOld;
+    private float yPosOld;
     private Image image;
 
-    public Body (int x, int y) throws SlickException {
+    public Body (float x, float y) throws SlickException {
         this.xPos = x;
         this.yPos = y;
 
         image = new Image("res/snake.png");
     }
 
-    public void updatePosition(int x, int y){
+    public void updatePosition(float x, float y, float delta){
         xPosOld = xPos;
         yPosOld = yPos;
-        xPos = x;
-        yPos = y;
+        xPos = xPos + (x - xPos);
+        yPos = yPos + (y - yPos);
     }
 
-    public int getxPos() {
+    public float getxPos() {
         return xPos;
     }
 
@@ -38,7 +38,7 @@ public class Body {
         this.xPos = xPos;
     }
 
-    public int getyPos() {
+    public float getyPos() {
         return yPos;
     }
 
@@ -54,7 +54,7 @@ public class Body {
         this.image = image;
     }
 
-    public int getxPosOld() {
+    public float getxPosOld() {
         return xPosOld;
     }
 
@@ -62,7 +62,7 @@ public class Body {
         this.xPosOld = xPosOld;
     }
 
-    public int getyPosOld() {
+    public float getyPosOld() {
         return yPosOld;
     }
 

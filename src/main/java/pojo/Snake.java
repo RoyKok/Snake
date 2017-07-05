@@ -2,6 +2,9 @@ package pojo;
 
 import org.newdawn.slick.Image;
 import org.newdawn.slick.SlickException;
+import org.newdawn.slick.geom.Rectangle;
+import org.newdawn.slick.geom.Shape;
+import org.newdawn.slick.geom.Transform;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -10,25 +13,22 @@ import java.util.List;
  * Created by Roy on 21-6-2017.
  *
  */
-public class Snake{
+public class Snake extends Rectangle{
 
     public static final int imageWidth = 25;
     public static final int imageHeight = 25;
 
-    private int xPos;
-    private int yPos;
     private int speed;
     private int length;
     private DirectionEnum direction;
     private Image image;
 
-    private int xPosOld;
-    private int yPosOld;
+    private float xPosOld;
+    private float yPosOld;
     private List<Body> bodyParts = new ArrayList<Body>();
 
-    public Snake(int xPos, int yPos, int speed, int length, DirectionEnum direction) throws SlickException {
-        this.xPos = xPos;
-        this.yPos = yPos;
+    public Snake(float xPos, float yPos, int speed, int length, DirectionEnum direction) throws SlickException {
+        super(xPos, yPos, 25, 25);
         this.speed = speed;
         this.length = length;
         this.direction = direction;
@@ -40,25 +40,25 @@ public class Snake{
     public void addNewBodyPart() throws SlickException {
         if (bodyParts.size() == 0){
             //This is the first bodyPart
-            bodyParts.add(new Body(xPosOld, yPosOld));
+            bodyParts.add(new Body(xPosOld-25, yPosOld-25));
         } else {
             //Get the last Body in the list
             Body body = bodyParts.get(bodyParts.size()-1);
-            bodyParts.add(new Body(body.getxPosOld(), body.getyPosOld()));
+            bodyParts.add(new Body(body.getxPosOld()-25, body.getyPosOld()-25));
         }
     }
 
-    public void update(){
+    public void update(int delta){
 
         //set the position of the snake
-        updatePosition();
+        updatePosition(delta);
 
     }
 
-    private void updatePosition(){
+    private void updatePosition(int delta){
 
-        xPosOld = xPos;
-        yPosOld = yPos;
+        xPosOld = x;
+        yPosOld = y;
 
         for (int i=0; i<bodyParts.size(); i++){
 
@@ -66,10 +66,10 @@ public class Snake{
 
             //This is the first body part after the head, this one needs the x,y from the head.
             if (i==0){
-                body.updatePosition(xPosOld, yPosOld);
+                body.updatePosition(xPosOld, yPosOld, delta);
             } else {
                 //We need x,y from the part above this one.
-                body.updatePosition(bodyParts.get(i-1).getxPosOld(), bodyParts.get(i-1).getyPosOld());
+                body.updatePosition(bodyParts.get(i-1).getxPosOld(), bodyParts.get(i-1).getyPosOld(), delta);
             }
 
         }
@@ -78,47 +78,31 @@ public class Snake{
         switch(direction){
 
             case UP:
-                yPos = yPos - imageHeight;
-                if (yPos < 0){
-                    yPos = 480;
+                y = y - (delta / 5) ;
+                if (y < 0){
+                    y = 480;
                 }
                 break;
             case DOWN:
-                yPos = yPos + imageHeight;
-                if (yPos > 480){
-                    yPos = 0;
+                y = y + (delta / 5) ;
+                if (y > 480){
+                    y = 0;
                 }
                 break;
             case LEFT:
-                xPos = xPos - imageWidth;
-                if (xPos < 0){
-                    xPos = 640;
+                x = x - (delta / 5) ;
+                if (x < 0){
+                    x = 640;
                 }
                 break;
             case RIGHT:
-                xPos = xPos + imageWidth;
-                if (xPos > 640){
-                    xPos = 0;
+                x = x + (delta / 5) ;
+                if (x > 640){
+                    x = 0;
                 }
                 break;
         }
 
-    }
-
-    public int getxPos() {
-        return xPos;
-    }
-
-    public void setxPos(int xPos) {
-        this.xPos = xPos;
-    }
-
-    public int getyPos() {
-        return yPos;
-    }
-
-    public void setyPos(int yPos) {
-        this.yPos = yPos;
     }
 
     public int getSpeed() {
@@ -149,7 +133,7 @@ public class Snake{
         return image;
     }
 
-    public int getxPosOld() {
+    public float getxPosOld() {
         return xPosOld;
     }
 
@@ -157,7 +141,7 @@ public class Snake{
         this.xPosOld = xPosOld;
     }
 
-    public int getyPosOld() {
+    public float getyPosOld() {
         return yPosOld;
     }
 
@@ -176,4 +160,6 @@ public class Snake{
     public void setImage(Image image) {
         this.image = image;
     }
+
+
 }
